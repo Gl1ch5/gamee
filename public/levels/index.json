@@ -1,0 +1,29 @@
+{
+  "packs": [
+    {
+      "id": "basics",
+      "name": "Основы времени",
+      "description": "Десять уровней: от первых шагов до петель, золота и стоп-кадров.",
+      "levels": [
+        "basics/01-first-steps.json",
+        "basics/02-rewind.json",
+        "basics/03-golden-crate.json",
+        "basics/04-echo.json",
+        "basics/05-echo-ladder.json",
+        "basics/06-stop.json",
+        "basics/07-time-garden.json",
+        "basics/08-recall.json",
+        "basics/09-loop-gold.json",
+        "basics/10-finale.json"
+      ]
+    },
+    {
+      "id": "springs",
+      "name": "Мод: Пружины",
+      "description": "Пример пака из мода: новые объекты подключаются без изменения кода игры.",
+      "mods": ["mods/springs.js"],
+      "levels": ["mods/springs-1.json"]
+    }
+  ],
+  "mods": ["mods/springs.js"]
+}

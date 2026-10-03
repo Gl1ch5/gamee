@@ -1,0 +1,35 @@
+{
+  "format": 1,
+  "name": "Золотой ящик",
+  "author": "Хроноскетч",
+  "abilities": ["rewind"],
+  "intro": "Золото не подвластно времени",
+  "tiles": [
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "S......SSSSSSSSSS............S",
+    "S......SSSSSSSSSS............S",
+    "S............................S",
+    "S#########....###############S",
+    "S#########....###############S",
+    "S......................SSSSSSS",
+    "S......................SSSSSSS",
+    "S......................SSSSSSS",
+    "S......................SSSSSSS",
+    "S......................SSSSSSS",
+    "##############################",
+    "##############################"
+  ],
+  "entities": [
+    {"type": "player", "x": 2, "y": 6},
+    {"type": "goal", "x": 25, "y": 6},
+    {"type": "crate", "x": 5, "y": 13, "props": {"anchored": true}},
+    {"type": "plate", "x": 22, "y": 13, "props": {"channel": "a"}},
+    {"type": "platform", "x": 10, "y": 4, "props": {"width": 4, "dx": 0, "dy": -3, "speed": 3, "channel": "a", "oneWay": false}},
+    {"type": "shard", "x": 8, "y": 6},
+    {"type": "sign", "x": 3, "y": 6, "props": {"text": "Золотые вещи живут вне времени:\n[rewind] не может их вернуть назад."}},
+    {"type": "sign", "x": 15, "y": 13, "props": {"text": "Отсюда не выбраться...\nили всё-таки можно?"}}
+  ]
+}

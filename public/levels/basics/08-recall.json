@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "name": "Два шага назад",
+  "author": "Хроноскетч",
+  "abilities": ["rewind", "recall"],
+  "intro": "Вернитесь туда, где вы были",
+  "tiles": [
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "S............................S",
+    "S............................S",
+    "S............................S",
+    "S############.###############S",
+    "S############.###############S",
+    "S............................S",
+    "S............................S",
+    "S............................S",
+    "S............................S",
+    "##############################",
+    "##############################"
+  ],
+  "entities": [
+    {"type": "player", "x": 2, "y": 7},
+    {"type": "goal", "x": 25, "y": 7},
+    {"type": "button", "x": 13, "y": 13, "props": {"channel": "a", "duration": 3}},
+    {"type": "door", "x": 17, "y": 7, "props": {"channel": "a", "height": 3}},
+    {"type": "sign", "x": 4, "y": 7, "props": {"text": "Дверь откроет кнопка внизу.\nСпрыгните, а потом [recall] — назад на 2 секунды."}},
+    {"type": "shard", "x": 8, "y": 5}
+  ]
+}

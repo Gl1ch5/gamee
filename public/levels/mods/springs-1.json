@@ -1,0 +1,36 @@
+{
+  "format": 1,
+  "name": "Пружинный сад",
+  "author": "Хроноскетч",
+  "abilities": ["rewind", "stop"],
+  "intro": "Уровень из мода «Пружины»",
+  "tiles": [
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "S................WWWW..........S",
+    "S................WWWW..........S",
+    "S................WWWW....WWWWWWS",
+    "S................WWWW....WWWWWWS",
+    "S........WWWW....WWWW....WWWWWWS",
+    "S........WWWW....WWWW....WWWWWWS",
+    "S........WWWW....WWWW....WWWWWWS",
+    "S........WWWW....WWWW....WWWWWWS",
+    "S........WWWW^^^^WWWW^^^^WWWWWWS",
+    "################################",
+    "################################"
+  ],
+  "entities": [
+    {"type": "player", "x": 2, "y": 15},
+    {"type": "goal", "x": 28, "y": 8},
+    {"type": "spring", "x": 6, "y": 15, "props": {"power": 21}},
+    {"type": "spring", "x": 12, "y": 10, "props": {"power": 21}},
+    {"type": "spring", "x": 20, "y": 6, "props": {"power": 16}},
+    {"type": "shard", "x": 14, "y": 4},
+    {"type": "sign", "x": 3, "y": 15, "props": {"text": "Это уровень из мода: пружины и деревянные блоки\nдобавлены в public/mods/springs.js без правки кода игры."}}
+  ]
+}

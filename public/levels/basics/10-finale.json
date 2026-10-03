@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "name": "Хроноскетч",
+  "author": "Хроноскетч",
+  "abilities": ["rewind", "stop"],
+  "loop": {"duration": 14, "maxEchoes": 2},
+  "intro": "Всё, чему вы научились",
+  "tiles": [
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "S..............................................S",
+    "S..............................................S",
+    "S..............................................S",
+    "S..........####################################S",
+    "S..........####################################S",
+    "S..............................................S",
+    "S..............................................S",
+    "S..............................................S",
+    "S..............................................S",
+    "S..............................................S",
+    "################################################",
+    "################################################"
+  ],
+  "entities": [
+    {"type": "player", "x": 1, "y": 15},
+    {"type": "goal", "x": 44, "y": 8},
+    {"type": "plate", "x": 3, "y": 15, "props": {"channel": "e"}},
+    {"type": "platform", "x": 8, "y": 15, "props": {"width": 3, "dx": 0, "dy": 6, "speed": 2, "channel": "e", "oneWay": true}},
+    {"type": "button", "x": 13, "y": 8, "props": {"channel": "t", "duration": 2.5}},
+    {"type": "saw", "x": 30, "y": 8, "props": {"dx": 0, "dy": 2, "speed": 3, "radius": 0.45}},
+    {"type": "door", "x": 41, "y": 8, "props": {"channel": "t", "height": 3}},
+    {"type": "sign", "x": 5, "y": 15, "props": {"text": "Лифт едет, пока кто-то стоит на плите.\nКто-то... например, вы из прошлого [loop]."}},
+    {"type": "sign", "x": 15, "y": 8, "props": {"text": "Кнопка далеко от двери. [stop]!"}},
+    {"type": "shard", "x": 9, "y": 10},
+    {"type": "shard", "x": 36, "y": 6}
+  ]
+}
