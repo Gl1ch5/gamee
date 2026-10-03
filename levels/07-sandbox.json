@@ -1,0 +1,135 @@
+{
+ "name": "Песочница уравнений",
+ "subtitle": "свои формулы, типы и плагин",
+ "hint": "Собери 2 кристалла. Здесь есть свои defs, свой тип pendulum и батут из плагина — всё правится в редакторе.",
+ "loop": 0,
+ "defs": {
+  "w": "2*pi/6",
+  "wave(a,b)": "a*sin(w*T+b)"
+ },
+ "types": {
+  "pendulum": {
+   "extends": "platform",
+   "label": "Маятник",
+   "icon": "◔",
+   "params": {
+    "amp": 3,
+    "ph": 0
+   },
+   "defaults": {
+    "w": 3,
+    "h": 0.6,
+    "px": "amp*sin(w*t*2+ph)",
+    "py": "0.35*amp*(1-cos(w*t*2+ph))"
+   }
+  }
+ },
+ "entities": [
+  {
+   "type": "spawn",
+   "x": 0,
+   "y": 0.5
+  },
+  {
+   "type": "block",
+   "x": 2,
+   "y": -0.5,
+   "w": 12,
+   "h": 1
+  },
+  {
+   "type": "block",
+   "x": -4.5,
+   "y": 5,
+   "w": 1,
+   "h": 12
+  },
+  {
+   "type": "pendulum",
+   "x": 12,
+   "y": 0,
+   "params": {
+    "amp": 2.5,
+    "ph": 0
+   }
+  },
+  {
+   "type": "pendulum",
+   "x": 18,
+   "y": 1,
+   "params": {
+    "amp": 3,
+    "ph": 2
+   }
+  },
+  {
+   "type": "pendulum",
+   "x": 24,
+   "y": 0,
+   "params": {
+    "amp": 2.5,
+    "ph": 4
+   }
+  },
+  {
+   "type": "zone",
+   "x": 18,
+   "y": 3,
+   "w": 6,
+   "h": 6,
+   "scale": "1+0.9*sin(w*T)",
+   "playerToo": false
+  },
+  {
+   "type": "block",
+   "x": 36,
+   "y": -0.5,
+   "w": 16,
+   "h": 1
+  },
+  {
+   "type": "bouncer",
+   "x": 33,
+   "y": 0.175
+  },
+  {
+   "type": "block",
+   "x": 37,
+   "y": 5.5,
+   "w": 4,
+   "h": 1
+  },
+  {
+   "type": "crystal",
+   "x": 4,
+   "y": 2.6
+  },
+  {
+   "type": "crystal",
+   "x": 37,
+   "y": 7.2
+  },
+  {
+   "type": "goal",
+   "x": 42,
+   "y": 1.1,
+   "need": 2
+  },
+  {
+   "type": "text",
+   "x": 4,
+   "y": 4.3,
+   "w": 8,
+   "h": 1,
+   "text": "x(t) = amp·sin(w·t) — формулы везде"
+  },
+  {
+   "type": "text",
+   "x": 33,
+   "y": 3,
+   "w": 6,
+   "h": 1,
+   "text": "батут (плагин)"
+  }
+ ]
+}

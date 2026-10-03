@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Хроно-Каракули</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4ecd6; --ink:#2b2540; --ink2:#5a5378; --coral:#ff6b4a; --teal:#2bb3a8; --gold:#f2bd52; --violet:#9b7fd6; --blue:#4a8dff;
+  --font: Caveat, 'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:20px;user-select:none}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.hidden{display:none!important}
+svg.defs{position:absolute;width:0;height:0}
+
+/* карточки с «нарисованной» рамкой */
+.card{position:relative;background:transparent}
+.card::before{content:"";position:absolute;inset:0;background:rgba(250,244,226,.94);border:3px solid var(--ink);border-radius:14px 10px 16px 9px;filter:url(#rough);z-index:-1;box-shadow:5px 6px 0 rgba(43,37,64,.18)}
+.card{z-index:0;isolation:isolate}
+button,.btn{font-family:var(--font);font-size:22px;color:var(--ink);background:transparent;border:0;cursor:pointer;position:relative;padding:6px 16px;isolation:isolate;transition:transform .12s}
+button::before,.btn::before{content:"";position:absolute;inset:0;background:#fff7dc;border:2.5px solid var(--ink);border-radius:10px 14px 9px 13px;filter:url(#rough);z-index:-1;transition:background .15s}
+button:hover{transform:translateY(-2px) rotate(-1deg)}
+button:hover::before{background:var(--gold)}
+button:active{transform:translateY(1px)}
+button.on::before{background:var(--coral)}
+button.primary::before{background:var(--coral)}
+button.small{font-size:18px;padding:3px 10px}
+button:disabled{opacity:.4;cursor:default}
+input,select,textarea{font-family:var(--font);font-size:19px;color:var(--ink);background:#fffaf0;border:2px solid var(--ink);border-radius:6px 9px 5px 8px;padding:2px 7px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{background:#fff;border-color:var(--coral)}
+input[type=color]{padding:0;height:30px;width:60px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--coral)}
+input[type=range]{padding:0;accent-color:var(--coral)}
+input.bad,textarea.bad{border-color:#d6453d;background:#ffe8e4}
+textarea{resize:vertical;font-size:17px;line-height:1.15}
+
+/* меню */
+#menu{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;background:radial-gradient(ellipse at center,rgba(244,236,214,.2),rgba(244,236,214,.75))}
+#menu h1{font-size:clamp(54px,9vw,110px);margin:0;line-height:.9;transform:rotate(-2deg);text-shadow:4px 4px 0 var(--gold),7px 8px 0 rgba(43,37,64,.2);letter-spacing:2px}
+#menu .sub{font-size:26px;color:var(--ink2);margin-bottom:12px;transform:rotate(1deg)}
+#menu .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:920px}
+#levels{padding:18px 22px;max-width:960px;max-height:46vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;width:min(960px,92vw)}
+.lvl{padding:8px 12px;text-align:left}
+.lvl small{display:block;color:var(--ink2);font-size:16px}
+.lvl .ck{position:absolute;right:8px;top:2px;color:var(--teal);font-size:26px}
+.sec{width:100%;text-align:left;margin:6px 0 0;color:var(--ink2);grid-column:1/-1;font-size:20px}
+
+/* HUD */
+#hud{position:fixed;inset:0;pointer-events:none;z-index:5}
+#hud .tl{position:absolute;left:18px;top:14px;max-width:min(520px,60vw)}
+#hud .tl .name{font-size:34px;font-weight:700;line-height:1}
+#hud .tl .hint{font-size:21px;color:var(--ink2);margin-top:2px}
+#hud .tc{position:absolute;left:50%;top:10px;transform:translateX(-50%);text-align:center}
+#clock{width:84px;height:84px}
+#clock text{font-family:var(--font);font-size:24px;fill:var(--ink);text-anchor:middle}
+#hud .loopinfo{font-size:19px;color:var(--ink2);margin-top:-6px}
+#hud .bl{position:absolute;left:18px;bottom:16px;width:min(300px,50vw)}
+.bar{height:20px;position:relative;margin:4px 0}
+.bar::before{content:"";position:absolute;inset:0;border:3px solid var(--ink);border-radius:9px 12px 8px 11px;background:#fffaf0;filter:url(#rough)}
+.bar i{position:absolute;left:4px;top:4px;bottom:4px;border-radius:6px;background:repeating-linear-gradient(135deg,var(--blue) 0 8px,#7fb0ff 8px 14px);transition:width .08s}
+.bar.low i{background:repeating-linear-gradient(135deg,#d6453d 0 8px,#ff8a7a 8px 14px)}
+#hud .br{position:absolute;right:18px;bottom:14px;text-align:right;font-size:18px;color:var(--ink2);line-height:1.25}
+kbd{font-family:var(--font);border:2px solid var(--ink);border-radius:6px;padding:0 6px;background:#fffaf0;color:var(--ink);font-size:17px}
+#toast{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);font-size:78px;font-weight:700;pointer-events:none;z-index:6;opacity:0;text-shadow:3px 3px 0 var(--gold);white-space:nowrap}
+#toast.show{animation:pop 1.3s ease-out}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-30%) scale(.5) rotate(-6deg)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1) rotate(-2deg)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%) scale(1) rotate(1deg)}}
+
+/* оверлеи */
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;background:rgba(244,236,214,.55);backdrop-filter:blur(2px)}
+.overlay .card{padding:26px 38px;text-align:center;min-width:300px}
+.overlay h2{font-size:56px;margin:0 0 6px;text-shadow:3px 3px 0 var(--gold)}
+.overlay p{margin:4px 0 14px;font-size:24px;color:var(--ink2)}
+.overlay .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* редактор */
+#editor{position:fixed;inset:0;pointer-events:none;z-index:8}
+#editor>*{pointer-events:auto}
+#ed-top{position:absolute;left:10px;right:10px;top:8px;display:flex;gap:8px;align-items:center;padding:6px 10px;flex-wrap:wrap}
+#ed-top .grow{flex:1}
+#ed-top input.nm{width:200px}
+#ed-pal{position:absolute;left:10px;top:74px;bottom:96px;width:150px;padding:8px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+#ed-pal button{text-align:left;width:100%;font-size:19px}
+#ed-pal h4,#ed-ins h4{margin:4px 0 2px;color:var(--ink2);font-weight:500;font-size:18px}
+#ed-ins{position:absolute;right:10px;top:74px;bottom:96px;width:310px;padding:8px;overflow:auto}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tabs button{flex:1;font-size:18px;padding:2px 6px}
+.fld{margin:5px 0}
+.fld label{display:block;font-size:16px;color:var(--ink2);margin-bottom:1px}
+.fld .err{color:#d6453d;font-size:15px;min-height:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.chip{font-size:15px;border:1.5px dashed var(--ink2);border-radius:8px;padding:0 6px;cursor:pointer;color:var(--ink2);background:#fffaf0}
+.chip:hover{background:var(--gold);color:var(--ink)}
+#ed-bot{position:absolute;left:170px;right:330px;bottom:8px;padding:8px 12px;display:flex;gap:12px;align-items:center}
+#ed-bot input[type=range]{flex:1}
+#plotbox{position:absolute;left:174px;bottom:100px;padding:6px;width:300px}
+#plot{width:100%;height:110px;display:block;background:#fffaf0;border:2px solid var(--ink);border-radius:6px}
+#ed-help{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:18px 28px;font-size:20px;line-height:1.3;max-width:min(640px,90vw)}
+#ed-status{font-size:16px;color:var(--ink2);min-height:20px}
+.hl{background:var(--gold);padding:0 4px;border-radius:4px}
+@media (max-width:900px){#ed-pal{width:112px}#ed-ins{width:240px}#ed-bot{left:130px;right:260px}}
+</style>
+</head>
+<body>
+<svg class="defs" aria-hidden="true"><defs>
+  <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+  </filter>
+</defs></svg>
+
+<canvas id="c"></canvas>
+
+<div id="menu">
+  <h1>Хроно&#8209;Каракули</h1>
+  <div class="sub">нарисованная головоломка о петлях времени</div>
+  <div class="row">
+    <button class="primary" id="m-play">▶ Играть</button>
+    <button id="m-edit">✎ Редактор уровней</button>
+    <button id="m-import">⇪ Загрузить уровень</button>
+    <button id="m-help">? Как играть</button>
+  </div>
+  <div id="levels" class="card"></div>
+  <input type="file" id="file" accept=".json,application/json" class="hidden">
+</div>
+
+<div id="hud" class="hidden">
+  <div class="tl"><div class="name" id="h-name"></div><div class="hint" id="h-hint"></div></div>
+  <div class="tc">
+    <svg id="clock" viewBox="0 0 84 84"><circle cx="42" cy="42" r="33" fill="#fff7dc" stroke="#2b2540" stroke-width="3" filter="url(#rough)"/>
+      <circle id="clock-arc" cx="42" cy="42" r="26" fill="none" stroke="#ff6b4a" stroke-width="7" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="0" transform="rotate(-90 42 42)"/>
+      <text id="clock-t" x="42" y="50">10</text></svg>
+    <div class="loopinfo" id="h-loop"></div>
+  </div>
+  <div class="bl"><div id="h-crys" style="font-size:22px"></div><div class="bar" id="h-bar"><i id="h-en" style="width:100%"></i></div><div style="font-size:16px;color:var(--ink2)">запас времени</div></div>
+  <div class="br"><kbd>←→</kbd>/<kbd>A D</kbd> бег · <kbd>Пробел</kbd> прыжок<br><kbd>Shift</kbd> замедлить · <kbd>F</kbd> ускорить · <kbd>R</kbd> перемотка<br><kbd>E</kbd> стазис · <kbd>L</kbd> новый цикл · <kbd>Esc</kbd> пауза</div>
+</div>
+<div id="toast"></div>
+
+<div id="pause" class="overlay hidden"><div class="card"><h2>Пауза</h2><div class="row">
+  <button class="primary" id="p-resume">Продолжить</button><button id="p-restart">Заново</button><button id="p-back">В меню</button></div></div></div>
+<div id="win" class="overlay hidden"><div class="card"><h2>Уровень пройден!</h2><p id="win-text"></p><div class="row">
+  <button class="primary" id="w-next">Дальше →</button><button id="w-again">Ещё раз</button><button id="w-back">В меню</button></div></div></div>
+<div id="help" class="overlay hidden"><div class="card" style="text-align:left;max-width:680px">
+  <h2 style="font-size:46px">Как играть</h2>
+  <p style="font-size:22px;color:var(--ink)">Доберись до золотого портала. Время — твой инструмент:</p>
+  <p style="font-size:21px;margin:0;color:var(--ink)">
+  <span class="hl">Петля</span> — когда таймер кончается (или жмёшь <kbd>L</kbd>), ты возвращаешься на старт, а прошлая ты становится <b>призраком</b>: он повторяет твой путь, нажимает плиты и держит двери.<br>
+  <span class="hl">Перемотка</span> <kbd>R</kbd> — отматывает всё назад. <span class="hl">Замедление</span> <kbd>Shift</kbd> и <span class="hl">ускорение</span> <kbd>F</kbd> меняют ход мира. <span class="hl">Стазис</span> <kbd>E</kbd> замораживает область вокруг тебя.<br>
+  <span class="hl">Зоны времени</span> — цветные области, где время течёт иначе (даже назад).<br>
+  Всё это тратит запас времени — он восстанавливается, когда ты ничего не крутишь.<br>
+  Свои уровни и уравнения — в <b>Редакторе</b>. Любое движение задаётся формулой от времени <code>t</code>.</p>
+  <div class="row" style="margin-top:14px"><button class="primary" id="help-ok">Понятно</button></div></div></div>
+
+<div id="editor" class="hidden">
+  <div id="ed-top" class="card">
+    <button id="e-back" class="small">← Меню</button>
+    <input class="nm" id="e-name" placeholder="название уровня">
+    <button id="e-undo" class="small" title="Ctrl+Z">↶</button><button id="e-redo" class="small" title="Ctrl+Y">↷</button>
+    <label style="font-size:18px">сетка <select id="e-grid" style="width:70px"><option>0.25</option><option selected>0.5</option><option>1</option><option value="0">нет</option></select></label>
+    <span class="grow" id="ed-status"></span>
+    <button id="e-test" class="primary small" title="Tab">▶ Тест</button>
+    <button id="e-save" class="small">💾 В браузер</button>
+    <button id="e-dl" class="small">⇩ .json</button>
+    <button id="e-load" class="small">⇪ Открыть</button>
+    <button id="e-copy" class="small">⧉ JSON</button>
+    <button id="e-help" class="small">?</button>
+  </div>
+  <div id="ed-pal" class="card"></div>
+  <div id="ed-ins" class="card">
+    <div class="tabs"><button class="small on" data-tab="obj">Объект</button><button class="small" data-tab="lvl">Уровень</button><button class="small" data-tab="plug">Плагины</button></div>
+    <div id="tab-obj"></div><div id="tab-lvl" class="hidden"></div><div id="tab-plug" class="hidden"></div>
+  </div>
+  <div id="plotbox" class="card hidden"><div style="font-size:16px;color:var(--ink2)" id="plot-title">график</div><canvas id="plot" width="300" height="110"></canvas></div>
+  <div id="ed-bot" class="card">
+    <button id="e-play" class="small">▶</button>
+    <span style="font-size:18px">время T</span>
+    <input type="range" id="e-T" min="0" max="10" step="0.01" value="0">
+    <b id="e-Tv" style="min-width:56px">0.00</b>
+  </div>
+  <div id="ed-help" class="card hidden">
+    <b style="font-size:28px">Редактор</b><br>
+    <span class="hl">ЛКМ</span> выбрать/двигать/растянуть · <span class="hl">Shift</span> добавить к выбору · перетащи по пустому — рамка<br>
+    <span class="hl">Пробел+ЛКМ</span> или <span class="hl">СКМ</span> — двигать холст · <span class="hl">колесо</span> — масштаб<br>
+    <span class="hl">Del</span> удалить · <span class="hl">Ctrl+D</span> дубль · <span class="hl">Ctrl+Z/Y</span> отмена · <span class="hl">стрелки</span> сдвиг · <span class="hl">Tab</span> тест<br>
+    Выбери тип слева и <span class="hl">кликни/протяни</span> на поле. Формулы в свойствах (<code>px</code>, <code>py</code>, <code>open</code>, <code>on</code>, <code>scale</code>…) считаются от <code>t</code> (локальное время), <code>T</code> (время цикла), <code>loop</code>, <code>px/py</code> игрока и сигналов плит (по id). Ползунок внизу показывает объекты в момент T — траектории рисуются пунктиром.<br>
+    Во вкладке «Уровень»: правила (гравитация, скорость, прыжок, ход времени — тоже формулы), <code>defs</code> — свои переменные и функции, <code>types</code> — свои типы объектов на JSON.
+    <div style="text-align:center;margin-top:10px"><button id="e-help-ok" class="small primary">Ясно</button></div>
+  </div>
+  <input type="file" id="e-file" accept=".json,application/json" class="hidden">
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
